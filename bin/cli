@@ -1,0 +1,17 @@
+#!/bin/sh
+basedir=`dirname "$0"`
+
+echo 'sh'
+
+case `uname` in
+    *CYGWIN*) basedir=`cygpath -w "$basedir"`;;
+esac
+
+if [ -x "$basedir/node" ]; then
+  "$basedir/node"  "$basedir/../lib/cli.js" "$@"
+  ret=$?
+else 
+  node  "$basedir/../lib/cli.js" "$@"
+  ret=$?
+fi
+exit $ret
