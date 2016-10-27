@@ -1,22 +1,8 @@
-var assert = require('chai').assert
-var cp = require('child_process');
-var path = require('path');
-var os = require('os');
-
-function execCli(args, options, cb) {
-
-    var filePath = path.resolve('bin', 'cli');
-    if (os.platform() === 'win32') {
-        filePath += '.cmd';
-    }
-    if (isFunction(options)) {
-        cb = options;
-    }
-
-    return cp.execFile(filePath, args, function (error, stdout, stderr) {
-        cb(error, stdout.trim(), stderr.trim());
-    });
-}
+'use strict';
+const assert = require('chai').assert
+const cp = require('child_process');
+const path = require('path');
+const os = require('os');
 
 describe('Test for simplest CLI app', function () {
     describe('arguments', function () {
@@ -57,7 +43,7 @@ describe('Test for simplest CLI app', function () {
     describe('stdin', function () {
 
         it('should exit with code 1 if empty string is provided into stdin', function (done) {
-            var child = execCli(['--stdin'], function (err, stdout, stderr) {
+            const child = execCli(['--stdin'], function (err, stdout, stderr) {
                 assert.isNotNull(err, 'error should be passed to callback');
                 assert.strictEqual(err.code, 1, 'error code should be 1');
                 done();
@@ -67,7 +53,7 @@ describe('Test for simplest CLI app', function () {
         });
 
         it('should exit with code 1 if only one number provided ', function (done) {
-            var child = execCli(['--stdin'], function (err, stdout, stderr) {
+            const child = execCli(['--stdin'], function (err, stdout, stderr) {
                 assert.isNotNull(err, 'error should be passed to callback');
                 assert.strictEqual(err.code, 1, 'error code should be 1');
                 done();
@@ -77,7 +63,7 @@ describe('Test for simplest CLI app', function () {
         });
 
         it('should exit with code 2 if more than 10 arguments provided', function (done) {
-            var child = execCli(['--stdin'], function (err, stdout, stderr) {
+            const child = execCli(['--stdin'], function (err, stdout, stderr) {
                 assert.isNotNull(err, 'error should be passed to callback');
                 assert.strictEqual(err.code, 2, 'error code should be 2');
                 done();
@@ -87,7 +73,7 @@ describe('Test for simplest CLI app', function () {
         });
 
         it('should return sum of the numbers', function (done) {
-            var child = execCli(['--stdin'], function (err, stdout, stderr) {
+            const child = execCli(['--stdin'], function (err, stdout, stderr) {
                 assert.isNull(err, 'no error should be passed to callback');
                 assert.strictEqual(stdout, '6', 'sum of 1 2 3 should be 6');
                 done();
@@ -98,6 +84,20 @@ describe('Test for simplest CLI app', function () {
     });
 });
 
+function execCli(args, options, cb) {
+
+    let filePath = path.resolve('bin', 'cli');
+    if (os.platform() === 'win32') {
+        filePath += '.cmd';
+    }
+    if (isFunction(options)) {
+        cb = options;
+    }
+
+    return cp.execFile(filePath, args, function (error, stdout, stderr) {
+        cb(error, stdout.trim(), stderr.trim());
+    });
+}
 
 function isFunction(fn) {
     return ({}).toString.call(fn) === '[object Function]';
