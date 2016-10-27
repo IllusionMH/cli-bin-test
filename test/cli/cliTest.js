@@ -5,7 +5,7 @@ const path = require('path');
 const os = require('os');
 
 describe('Test for simplest CLI app', function () {
-    describe('arguments', function () {
+    describe('Data from arguments', function () {
 
         it('should exit with code 1 if no numbers provided', function (done) {
             execCli([], function (err, stdout, stderr) {
@@ -40,7 +40,7 @@ describe('Test for simplest CLI app', function () {
         });
     });
 
-    describe('stdin', function () {
+    describe('Data from stdin', function () {
 
         it('should exit with code 1 if empty string is provided into stdin', function (done) {
             const child = execCli(['--stdin'], function (err, stdout, stderr) {
@@ -85,11 +85,14 @@ describe('Test for simplest CLI app', function () {
 });
 
 function execCli(args, options, cb) {
+    let filePath = path.resolve(__dirname, '..', 'npm-like-bin', 'cli');
 
-    let filePath = path.resolve('bin', 'cli');
+
+    // Specify extension for Windows executable to avoid ENOENT errors 
     if (os.platform() === 'win32') {
         filePath += '.cmd';
     }
+
     if (isFunction(options)) {
         cb = options;
     }
